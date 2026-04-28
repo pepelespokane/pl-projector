@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premier League Projector — 2025/26</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --card: #1a1f2e;
+    --card-2: #232a3d;
+    --border: #2c344a;
+    --text: #e8eaed;
+    --text-mid: #9ba3b8;
+    --text-dim: #6a7588;
+    --accent: #4f8ef7;
+    --champion: #fbbf24;     /* gold */
+    --cl: #2563eb;            /* blue */
+    --el: #ea580c;            /* orange */
+    --ecl: #14b8a6;           /* teal */
+    --releg: #dc2626;         /* red */
+    --win: #16a34a;
+    --draw: #6b7280;
+    --loss: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 28px;
+    margin: 0 0 6px;
+    color: var(--text);
+  }
+  header p {
+    margin: 0;
+    color: var(--text-mid);
+    font-size: 14px;
+  }
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 12px;
+    font-size: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-mid);
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+  }
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  button {
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  button:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: #3b7ce8; }
+  .btn-secondary {
+    background: var(--card-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: #2c344a; }
+
+  /* Tables */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+  }
+  .card h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    color: var(--text);
+  }
+  .card h2 .muted {
+    color: var(--text-mid);
+    font-weight: 400;
+    font-size: 13px;
+    margin-left: 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead th {
+    text-align: left;
+    padding: 10px 8px;
+    color: var(--text-mid);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+  thead th.num { text-align: right; }
+  tbody td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(44,52,74,0.5);
+  }
+  tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.zone-champion { background: rgba(251,191,36,0.10); border-left: 4px solid var(--champion); }
+  tbody tr.zone-cl       { background: rgba(37,99,235,0.10);  border-left: 4px solid var(--cl); }
+  tbody tr.zone-el       { background: rgba(234,88,12,0.10);  border-left: 4px solid var(--el); }
+  tbody tr.zone-ecl      { background: rgba(20,184,166,0.10); border-left: 4px solid var(--ecl); }
+  tbody tr.zone-releg    { background: rgba(220,38,38,0.10);  border-left: 4px solid var(--releg); }
+  td.pos { font-weight: 700; width: 36px; }
+  td.team { font-weight: 600; }
+  td.pts { font-weight: 700; }
+  td.delta { color: var(--text-mid); font-size: 12px; }
+  td.delta.up   { color: var(--win); }
+  td.delta.down { color: var(--loss); }
+
+  /* Fixtures */
+  .matchweek {
+    margin-bottom: 28px;
+  }
+  .matchweek h3 {
+    margin: 0 0 12px;
+    font-size: 15px;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .fixture {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    background: var(--card-2);
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+  .fix-team { font-weight: 600; font-size: 14px; }
+  .fix-team.home { text-align: right; }
+  .fix-team.away { text-align: left; }
+  .fix-team.winner { color: var(--win); }
+  .fix-team.loser  { color: var(--text-dim); }
+  .fix-team.draw   { color: var(--text); }
+
+  .result-picker {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 4px;
+    border: 1px solid var(--border);
+  }
+  .result-picker button {
+    padding: 6px 12px;
+    font-size: 12px;
+    background: transparent;
+    color: var(--text-mid);
+    border-radius: 4px;
+    font-weight: 600;
+    min-width: 36px;
+  }
+  .result-picker button.active {
+    background: var(--accent);
+    color: white;
+  }
+  .result-picker button.active.home-win { background: var(--win); }
+  .result-picker button.active.draw     { background: var(--draw); }
+  .result-picker button.active.away-win { background: var(--win); }
+
+  .fix-meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .pill.modified {
+    background: var(--accent);
+    color: white;
+  }
+
+  /* Mobile */
+  @media (max-width: 700px) {
+    .wrap { padding: 12px; }
+    header h1 { font-size: 22px; }
+    table { font-size: 13px; }
+    thead th, tbody td { padding: 8px 4px; }
+    .fixture { grid-template-columns: 1fr auto 1fr; gap: 6px; padding: 10px; }
+    .fix-team { font-size: 12px; }
+    .result-picker button { padding: 5px 8px; font-size: 11px; min-width: 28px; }
+    .hide-mobile { display: none; }
+  }
+
+  .footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 12px;
+    margin: 32px 0 16px;
+  }
+
+  .info-callouts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .callout {
+    background: var(--card-2);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .callout-label {
+    color: var(--text-mid);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .callout-value {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>⚽ Premier League Projector — 2025/26</h1>
+    <p>Click any match to change its result. The other team's fixture updates automatically. Hit Submit to recalculate the table.</p>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--champion)"></span>1st — Champion</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--cl)"></span>2-5 — Champions League</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--el)"></span>6-7 — Europa League</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--ecl)"></span>8 — Europa Conference</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--releg)"></span>18-20 — Relegation</span>
+    </div>
+    <p style="margin-top:8px; font-size:12px; color:var(--text-dim);">
+      European spots assume England keeps the 5th CL spot via UEFA coefficient + Carabao Cup cascade (Man City won → ECL drops to 8th) + FA Cup cascade (EL drops to 7th).
+    </p>
+  </header>
+
+  <div class="info-callouts">
+    <div class="callout">
+      <div class="callout-label">Games Remaining</div>
+      <div class="callout-value" id="games-remaining">40</div>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Modified Picks</div>
+      <div class="callout-value" id="modified-count">0</div>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Last Updated</div>
+      <div class="callout-value" style="font-size:13px;">Apr 27, 2026</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-primary" id="submit-btn">📊 Submit & Recalculate</button>
+    <button class="btn-secondary" id="reset-btn">🔄 Reset to Defaults</button>
+  </div>
+
+  <!-- Final / projected table -->
+  <div class="card">
+    <h2>Projected Final Table <span class="muted" id="table-status">(default favorites applied)</span></h2>
+    <table id="final-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Team</th>
+          <th class="num">P</th>
+          <th class="num hide-mobile">W</th>
+          <th class="num hide-mobile">D</th>
+          <th class="num hide-mobile">L</th>
+          <th class="num">GD</th>
+          <th class="num">Pts</th>
+          <th class="num hide-mobile">Δ</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Fixtures -->
+  <div class="card">
+    <h2>Remaining Fixtures <span class="muted">(click to change result)</span></h2>
+    <div id="fixtures"></div>
+  </div>
+
+  <div class="footer">
+    Data current as of Apr 27, 2026 (post Man Utd 2-1 Brentford). 1 win = +1 GD assumption.<br>
+    Crystal Palace has 1 game in hand not shown — adjust mentally if needed.
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// DATA
+// ============================================================================
+
+const TEAMS = [
+  // Current standings as of Apr 27, 2026 (incl. Man Utd 2-1 Brentford)
+  { name: "Arsenal",          short: "ARS", P: 34, W: 22, D:  7, L:  5, GF: 64, GA: 26, Pts: 73 },
+  { name: "Manchester City",  short: "MCI", P: 33, W: 21, D:  7, L:  5, GF: 66, GA: 29, Pts: 70 },
+  { name: "Manchester United",short: "MUN", P: 34, W: 17, D: 10, L:  7, GF: 60, GA: 46, Pts: 61 },
+  { name: "Liverpool",        short: "LIV", P: 34, W: 17, D:  7, L: 10, GF: 57, GA: 44, Pts: 58 },
+  { name: "Aston Villa",      short: "AVL", P: 34, W: 17, D:  7, L: 10, GF: 47, GA: 42, Pts: 58 },
+  { name: "Brighton",         short: "BHA", P: 34, W: 13, D: 11, L: 10, GF: 48, GA: 39, Pts: 50 },
+  { name: "Bournemouth",      short: "BOU", P: 34, W: 11, D: 16, L:  7, GF: 52, GA: 52, Pts: 49 },
+  { name: "Chelsea",          short: "CHE", P: 34, W: 13, D:  9, L: 12, GF: 53, GA: 45, Pts: 48 },
+  { name: "Brentford",        short: "BRE", P: 34, W: 13, D:  9, L: 12, GF: 49, GA: 46, Pts: 48 },
+  { name: "Fulham",           short: "FUL", P: 34, W: 14, D:  6, L: 14, GF: 44, GA: 46, Pts: 48 },
+  { name: "Everton",          short: "EVE", P: 34, W: 13, D:  8, L: 13, GF: 41, GA: 41, Pts: 47 },
+  { name: "Sunderland",       short: "SUN", P: 34, W: 12, D: 10, L: 12, GF: 36, GA: 45, Pts: 46 },
+  { name: "Crystal Palace",   short: "CRY", P: 33, W: 11, D: 10, L: 12, GF: 36, GA: 39, Pts: 43 },
+  { name: "Newcastle",        short: "NEW", P: 34, W: 12, D:  6, L: 16, GF: 46, GA: 50, Pts: 42 },
+  { name: "Leeds",            short: "LEE", P: 34, W:  9, D: 13, L: 12, GF: 44, GA: 51, Pts: 40 },
+  { name: "Nottm Forest",     short: "NFO", P: 34, W: 10, D:  9, L: 15, GF: 41, GA: 45, Pts: 39 },
+  { name: "West Ham",         short: "WHU", P: 34, W:  9, D:  9, L: 16, GF: 42, GA: 58, Pts: 36 },
+  { name: "Tottenham",        short: "TOT", P: 34, W:  8, D: 10, L: 16, GF: 43, GA: 53, Pts: 34 },
+  { name: "Burnley",          short: "BUR", P: 34, W:  4, D:  8, L: 22, GF: 34, GA: 68, Pts: 20 },
+  { name: "Wolves",           short: "WOL", P: 34, W:  3, D:  8, L: 23, GF: 24, GA: 62, Pts: 17 },
+];
+
+// Index for fast lookup by name
+const TEAM_BY_NAME = Object.fromEntries(TEAMS.map(t => [t.name, t]));
+
+// 40 remaining fixtures (matchweeks 35-38)
+const FIXTURES_RAW = [
+  // MW 35
+  { mw: 35, date: "Fri May 1",  home: "Leeds",            away: "Burnley" },
+  { mw: 35, date: "Sat May 2",  home: "Brentford",        away: "West Ham" },
+  { mw: 35, date: "Sat May 2",  home: "Newcastle",        away: "Brighton" },
+  { mw: 35, date: "Sat May 2",  home: "Wolves",           away: "Sunderland" },
+  { mw: 35, date: "Sat May 2",  home: "Arsenal",          away: "Fulham" },
+  { mw: 35, date: "Sun May 3",  home: "Bournemouth",      away: "Crystal Palace" },
+  { mw: 35, date: "Sun May 3",  home: "Manchester United",away: "Liverpool" },
+  { mw: 35, date: "Sun May 3",  home: "Aston Villa",      away: "Tottenham" },
+  { mw: 35, date: "Mon May 4",  home: "Everton",          away: "Manchester City" },
+  { mw: 35, date: "Mon May 4",  home: "Chelsea",          away: "Nottm Forest" },
+  // MW 36
+  { mw: 36, date: "Sat May 9",  home: "Brighton",         away: "Wolves" },
+  { mw: 36, date: "Sat May 9",  home: "Burnley",          away: "Aston Villa" },
+  { mw: 36, date: "Sat May 9",  home: "Crystal Palace",   away: "Everton" },
+  { mw: 36, date: "Sat May 9",  home: "Fulham",           away: "Bournemouth" },
+  { mw: 36, date: "Sat May 9",  home: "Liverpool",        away: "Chelsea" },
+  { mw: 36, date: "Sat May 9",  home: "Manchester City",  away: "Brentford" },
+  { mw: 36, date: "Sat May 9",  home: "Nottm Forest",     away: "Newcastle" },
+  { mw: 36, date: "Sat May 9",  home: "Sunderland",       away: "Manchester United" },
+  { mw: 36, date: "Sat May 9",  home: "Tottenham",        away: "Leeds" },
+  { mw: 36, date: "Sat May 9",  home: "West Ham",         away: "Arsenal" },
+  // MW 37
+  { mw: 37, date: "Sun May 17", home: "Bournemouth",      away: "Manchester City" },
+  { mw: 37, date: "Sun May 17", home: "Arsenal",          away: "Burnley" },
+  { mw: 37, date: "Sun May 17", home: "Aston Villa",      away: "Liverpool" },
+  { mw: 37, date: "Sun May 17", home: "Brentford",        away: "Crystal Palace" },
+  { mw: 37, date: "Sun May 17", home: "Chelsea",          away: "Tottenham" },
+  { mw: 37, date: "Sun May 17", home: "Everton",          away: "Sunderland" },
+  { mw: 37, date: "Sun May 17", home: "Leeds",            away: "Brighton" },
+  { mw: 37, date: "Sun May 17", home: "Manchester United",away: "Nottm Forest" },
+  { mw: 37, date: "Sun May 17", home: "Newcastle",        away: "West Ham" },
+  { mw: 37, date: "Sun May 17", home: "Wolves",           away: "Fulham" },
+  // MW 38
+  { mw: 38, date: "Sun May 24", home: "Brighton",         away: "Manchester United" },
+  { mw: 38, date: "Sun May 24", home: "Burnley",          away: "Wolves" },
+  { mw: 38, date: "Sun May 24", home: "Crystal Palace",   away: "Arsenal" },
+  { mw: 38, date: "Sun May 24", home: "Fulham",           away: "Newcastle" },
+  { mw: 38, date: "Sun May 24", home: "Liverpool",        away: "Brentford" },
+  { mw: 38, date: "Sun May 24", home: "Manchester City",  away: "Aston Villa" },
+  { mw: 38, date: "Sun May 24", home: "Nottm Forest",     away: "Bournemouth" },
+  { mw: 38, date: "Sun May 24", home: "Sunderland",       away: "Chelsea" },
+  { mw: 38, date: "Sun May 24", home: "Tottenham",        away: "Everton" },
+  { mw: 38, date: "Sun May 24", home: "West Ham",         away: "Leeds" },
+];
+
+// Compute default favorite using current points + home advantage.
+// Wider draw band: only call a winner when the strength gap is meaningful.
+// Edge cases (like Bournemouth's 16-draw season) get a draw by default;
+// you can always click to change.
+function defaultResult(home, away) {
+  const h = TEAM_BY_NAME[home].Pts + 5;  // home advantage ~ 5 pts
+  const a = TEAM_BY_NAME[away].Pts;
+  if (h - a >= 9) return "H";
+  if (a - h >= 5) return "A";
+  return "D";
+}
+
+// Build fixture state
+let fixtures = FIXTURES_RAW.map((f, i) => ({
+  id: i,
+  ...f,
+  default: defaultResult(f.home, f.away),
+  result: defaultResult(f.home, f.away),
+}));
+
+// ============================================================================
+// CALCULATION
+// ============================================================================
+
+function computeProjectedTable() {
+  const projected = TEAMS.map(t => ({ ...t, addW: 0, addD: 0, addL: 0, addGF: 0, addGA: 0, addPts: 0 }));
+  const byName = Object.fromEntries(projected.map(t => [t.name, t]));
+
+  for (const f of fixtures) {
+    const h = byName[f.home];
+    const a = byName[f.away];
+    if (f.result === "H") {
+      h.addW++; h.addPts += 3; h.addGF += 1;
+      a.addL++;                 a.addGA += 1;
+    } else if (f.result === "A") {
+      a.addW++; a.addPts += 3; a.addGF += 1;
+      h.addL++;                 h.addGA += 1;
+    } else {
+      h.addD++; h.addPts += 1;
+      a.addD++; a.addPts += 1;
+    }
+  }
+
+  return projected.map(t => ({
+    name: t.name,
+    short: t.short,
+    P: t.P + t.addW + t.addD + t.addL,
+    W: t.W + t.addW,
+    D: t.D + t.addD,
+    L: t.L + t.addL,
+    GF: t.GF + t.addGF,
+    GA: t.GA + t.addGA,
+    GD: (t.GF + t.addGF) - (t.GA + t.addGA),
+    Pts: t.Pts + t.addPts,
+    currentPos: TEAMS.findIndex(x => x.name === t.name) + 1,
+  }))
+  .sort((a, b) => b.Pts - a.Pts || b.GD - a.GD || b.GF - a.GF || a.name.localeCompare(b.name));
+}
+
+// ============================================================================
+// RENDERING
+// ============================================================================
+
+function zoneClass(pos) {
+  if (pos === 1) return "zone-champion";
+  if (pos <= 5) return "zone-cl";
+  if (pos <= 7) return "zone-el";
+  if (pos === 8) return "zone-ecl";
+  if (pos >= 18) return "zone-releg";
+  return "";
+}
+
+function renderTable() {
+  const data = computeProjectedTable();
+  const tbody = document.getElementById("table-body");
+  tbody.innerHTML = "";
+  data.forEach((t, i) => {
+    const pos = i + 1;
+    const tr = document.createElement("tr");
+    tr.className = zoneClass(pos);
+
+    const delta = t.currentPos - pos; // positive = climbed
+    let deltaText = "—";
+    let deltaClass = "delta";
+    if (delta > 0) { deltaText = "▲ " + delta; deltaClass += " up"; }
+    else if (delta < 0) { deltaText = "▼ " + Math.abs(delta); deltaClass += " down"; }
+
+    tr.innerHTML = `
+      <td class="pos">${pos}</td>
+      <td class="team">${t.name}</td>
+      <td class="num">${t.P}</td>
+      <td class="num hide-mobile">${t.W}</td>
+      <td class="num hide-mobile">${t.D}</td>
+      <td class="num hide-mobile">${t.L}</td>
+      <td class="num">${t.GD > 0 ? "+" : ""}${t.GD}</td>
+      <td class="num pts">${t.Pts}</td>
+      <td class="num hide-mobile ${deltaClass}">${deltaText}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderFixtures() {
+  const container = document.getElementById("fixtures");
+  container.innerHTML = "";
+
+  const matchweeks = [...new Set(fixtures.map(f => f.mw))].sort((a, b) => a - b);
+  for (const mw of matchweeks) {
+    const mwFixtures = fixtures.filter(f => f.mw === mw);
+    const block = document.createElement("div");
+    block.className = "matchweek";
+    block.innerHTML = `<h3>Matchweek ${mw} — ${mwFixtures[0].date.split(" ")[1]} ${mwFixtures[0].date.split(" ")[2]}</h3>`;
+
+    for (const f of mwFixtures) {
+      const isHome = f.result === "H";
+      const isDraw = f.result === "D";
+      const isAway = f.result === "A";
+      const modified = f.result !== f.default;
+
+      const homeClass = isHome ? "winner" : (isDraw ? "draw" : "loser");
+      const awayClass = isAway ? "winner" : (isDraw ? "draw" : "loser");
+
+      const fix = document.createElement("div");
+      fix.className = "fixture";
+      fix.innerHTML = `
+        <div>
+          <div class="fix-team home ${homeClass}">${f.home}</div>
+          <div class="fix-meta" style="text-align:right;">${f.date}${modified ? ' <span class="pill modified">EDITED</span>' : ""}</div>
+        </div>
+        <div class="result-picker" data-id="${f.id}">
+          <button data-pick="H" class="${isHome ? "active home-win" : ""}">H</button>
+          <button data-pick="D" class="${isDraw ? "active draw"     : ""}">D</button>
+          <button data-pick="A" class="${isAway ? "active away-win" : ""}">A</button>
+        </div>
+        <div>
+          <div class="fix-team away ${awayClass}">${f.away}</div>
+        </div>
+      `;
+      block.appendChild(fix);
+    }
+    container.appendChild(block);
+  }
+
+  // Wire up result-picker buttons
+  container.querySelectorAll(".result-picker").forEach(picker => {
+    const id = parseInt(picker.dataset.id);
+    picker.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const pick = btn.dataset.pick;
+        const f = fixtures.find(x => x.id === id);
+        f.result = pick;
+        renderFixtures();
+        updateModifiedCount();
+        document.getElementById("table-status").textContent = "(unsubmitted edits — click Submit)";
+      });
+    });
+  });
+}
+
+function updateModifiedCount() {
+  const count = fixtures.filter(f => f.result !== f.default).length;
+  document.getElementById("modified-count").textContent = count;
+}
+
+// ============================================================================
+// CONTROLS
+// ============================================================================
+
+document.getElementById("submit-btn").addEventListener("click", () => {
+  renderTable();
+  document.getElementById("table-status").textContent = "(your projection)";
+  // Smooth scroll to table
+  document.querySelector("#final-table").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+document.getElementById("reset-btn").addEventListener("click", () => {
+  fixtures = FIXTURES_RAW.map((f, i) => ({
+    id: i,
+    ...f,
+    default: defaultResult(f.home, f.away),
+    result: defaultResult(f.home, f.away),
+  }));
+  renderFixtures();
+  renderTable();
+  updateModifiedCount();
+  document.getElementById("table-status").textContent = "(default favorites applied)";
+});
+
+// ============================================================================
+// INIT
+// ============================================================================
+
+document.getElementById("games-remaining").textContent = fixtures.length;
+renderFixtures();
+renderTable();
+updateModifiedCount();
+</script>
+
+</body>
+</html>
