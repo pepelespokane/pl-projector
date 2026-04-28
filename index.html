@@ -520,9 +520,17 @@ function renderTable() {
     if (delta > 0) { deltaText = "▲ " + delta; deltaClass += " up"; }
     else if (delta < 0) { deltaText = "▼ " + Math.abs(delta); deltaClass += " down"; }
 
+    // Current (pre-projection) values for comparison
+    const cur = TEAM_BY_NAME[t.name];
+    const curGD = cur.GF - cur.GA;
+    const currentLine = `Now: ${t.currentPos}${ordinalSuffix(t.currentPos)} · ${cur.Pts} pts · ${curGD > 0 ? "+" : ""}${curGD} GD`;
+
     tr.innerHTML = `
       <td class="pos">${pos}</td>
-      <td class="team">${t.name}</td>
+      <td class="team">
+        ${t.name}
+        <span class="fix-team-stats">${currentLine}</span>
+      </td>
       <td class="num">${t.P}</td>
       <td class="num hide-mobile">${t.W}</td>
       <td class="num hide-mobile">${t.D}</td>
