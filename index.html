@@ -180,6 +180,14 @@
   .fix-team.winner { color: var(--win); }
   .fix-team.loser  { color: var(--text-dim); }
   .fix-team.draw   { color: var(--text); }
+  .fix-team-stats {
+    display: block;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
 
   .result-picker {
     display: flex;
@@ -421,6 +429,8 @@ const FIXTURES_RAW = [
   { mw: 38, date: "Sun May 24", home: "Sunderland",       away: "Chelsea" },
   { mw: 38, date: "Sun May 24", home: "Tottenham",        away: "Everton" },
   { mw: 38, date: "Sun May 24", home: "West Ham",         away: "Leeds" },
+  // Postponed game in hand — Man City vs Palace originally Mar 21 (rescheduled to midweek May)
+  { mw: 99, date: "Fri May 22", home: "Manchester City",  away: "Crystal Palace" },
 ];
 
 // Compute default favorite using current points + home advantage.
@@ -525,6 +535,19 @@ function renderTable() {
   });
 }
 
+function teamStatsLabel(name) {
+  const t = TEAM_BY_NAME[name];
+  const pos = TEAMS.findIndex(x => x.name === name) + 1;
+  const gd = t.GF - t.GA;
+  return `${pos}${ordinalSuffix(pos)} · ${t.Pts} pts · ${gd > 0 ? "+" : ""}${gd} GD`;
+}
+
+function ordinalSuffix(n) {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
+
 function renderFixtures() {
   const container = document.getElementById("fixtures");
   container.innerHTML = "";
@@ -534,7 +557,8 @@ function renderFixtures() {
     const mwFixtures = fixtures.filter(f => f.mw === mw);
     const block = document.createElement("div");
     block.className = "matchweek";
-    block.innerHTML = `<h3>Matchweek ${mw} — ${mwFixtures[0].date.split(" ")[1]} ${mwFixtures[0].date.split(" ")[2]}</h3>`;
+    const mwLabel = mw === 99 ? "Game in Hand" : `Matchweek ${mw}`;
+    block.innerHTML = `<h3>${mwLabel} — ${mwFixtures[0].date}</h3>`;
 
     for (const f of mwFixtures) {
       const isHome = f.result === "H";
@@ -549,7 +573,10 @@ function renderFixtures() {
       fix.className = "fixture";
       fix.innerHTML = `
         <div>
-          <div class="fix-team home ${homeClass}">${f.home}</div>
+          <div class="fix-team home ${homeClass}">
+            ${f.home}
+            <span class="fix-team-stats">${teamStatsLabel(f.home)}</span>
+          </div>
           <div class="fix-meta" style="text-align:right;">${f.date}${modified ? ' <span class="pill modified">EDITED</span>' : ""}</div>
         </div>
         <div class="result-picker" data-id="${f.id}">
@@ -558,7 +585,10 @@ function renderFixtures() {
           <button data-pick="A" class="${isAway ? "active away-win" : ""}">A</button>
         </div>
         <div>
-          <div class="fix-team away ${awayClass}">${f.away}</div>
+          <div class="fix-team away ${awayClass}">
+            ${f.away}
+            <span class="fix-team-stats">${teamStatsLabel(f.away)}</span>
+          </div>
         </div>
       `;
       block.appendChild(fix);
