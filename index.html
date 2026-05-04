@@ -309,7 +309,7 @@
     </div>
     <div class="callout">
       <div class="callout-label">Last Updated</div>
-      <div class="callout-value" style="font-size:13px;">Apr 27, 2026</div>
+      <div class="callout-value" style="font-size:13px;">May 4, 2026</div>
     </div>
   </div>
 
@@ -346,8 +346,8 @@
   </div>
 
   <div class="footer">
-    Data current as of Apr 27, 2026 (post Man Utd 2-1 Brentford). 1 win = +1 GD assumption.<br>
-    Crystal Palace has 1 game in hand not shown — adjust mentally if needed.
+    Data current as of May 4, 2026 (post MW 35 — 9 of 10 games played; Everton vs Man City pending tonight). 1 win = +1 GD assumption.<br>
+    Man City has 2 games in hand (Everton tonight + Crystal Palace May 22). Crystal Palace has 1 game in hand (vs Man City May 22).
   </div>
 </div>
 
@@ -357,45 +357,36 @@
 // ============================================================================
 
 const TEAMS = [
-  // Current standings as of Apr 27, 2026 (incl. Man Utd 2-1 Brentford)
-  { name: "Arsenal",          short: "ARS", P: 34, W: 22, D:  7, L:  5, GF: 64, GA: 26, Pts: 73 },
+  // Current standings as of May 4, 2026 (post MW 35 — 9 of 10 games played; Everton-Man City pending tonight)
+  { name: "Arsenal",          short: "ARS", P: 35, W: 23, D:  7, L:  5, GF: 67, GA: 26, Pts: 76 },
   { name: "Manchester City",  short: "MCI", P: 33, W: 21, D:  7, L:  5, GF: 66, GA: 29, Pts: 70 },
-  { name: "Manchester United",short: "MUN", P: 34, W: 17, D: 10, L:  7, GF: 60, GA: 46, Pts: 61 },
-  { name: "Liverpool",        short: "LIV", P: 34, W: 17, D:  7, L: 10, GF: 57, GA: 44, Pts: 58 },
-  { name: "Aston Villa",      short: "AVL", P: 34, W: 17, D:  7, L: 10, GF: 47, GA: 42, Pts: 58 },
-  { name: "Brighton",         short: "BHA", P: 34, W: 13, D: 11, L: 10, GF: 48, GA: 39, Pts: 50 },
-  { name: "Bournemouth",      short: "BOU", P: 34, W: 11, D: 16, L:  7, GF: 52, GA: 52, Pts: 49 },
-  { name: "Chelsea",          short: "CHE", P: 34, W: 13, D:  9, L: 12, GF: 53, GA: 45, Pts: 48 },
-  { name: "Brentford",        short: "BRE", P: 34, W: 13, D:  9, L: 12, GF: 49, GA: 46, Pts: 48 },
-  { name: "Fulham",           short: "FUL", P: 34, W: 14, D:  6, L: 14, GF: 44, GA: 46, Pts: 48 },
+  { name: "Manchester United",short: "MUN", P: 35, W: 18, D: 10, L:  7, GF: 63, GA: 48, Pts: 64 },
+  { name: "Liverpool",        short: "LIV", P: 35, W: 17, D:  7, L: 11, GF: 59, GA: 47, Pts: 58 },
+  { name: "Aston Villa",      short: "AVL", P: 35, W: 17, D:  7, L: 11, GF: 48, GA: 44, Pts: 58 },
+  { name: "Bournemouth",      short: "BOU", P: 35, W: 12, D: 16, L:  7, GF: 55, GA: 52, Pts: 52 },
+  { name: "Brentford",        short: "BRE", P: 35, W: 14, D:  9, L: 12, GF: 52, GA: 46, Pts: 51 },
+  { name: "Brighton",         short: "BHA", P: 35, W: 13, D: 11, L: 11, GF: 49, GA: 42, Pts: 50 },
+  { name: "Chelsea",          short: "CHE", P: 35, W: 13, D:  9, L: 13, GF: 54, GA: 48, Pts: 48 },
+  { name: "Fulham",           short: "FUL", P: 35, W: 14, D:  6, L: 15, GF: 44, GA: 49, Pts: 48 },
   { name: "Everton",          short: "EVE", P: 34, W: 13, D:  8, L: 13, GF: 41, GA: 41, Pts: 47 },
-  { name: "Sunderland",       short: "SUN", P: 34, W: 12, D: 10, L: 12, GF: 36, GA: 45, Pts: 46 },
-  { name: "Crystal Palace",   short: "CRY", P: 33, W: 11, D: 10, L: 12, GF: 36, GA: 39, Pts: 43 },
-  { name: "Newcastle",        short: "NEW", P: 34, W: 12, D:  6, L: 16, GF: 46, GA: 50, Pts: 42 },
-  { name: "Leeds",            short: "LEE", P: 34, W:  9, D: 13, L: 12, GF: 44, GA: 51, Pts: 40 },
-  { name: "Nottm Forest",     short: "NFO", P: 34, W: 10, D:  9, L: 15, GF: 41, GA: 45, Pts: 39 },
-  { name: "West Ham",         short: "WHU", P: 34, W:  9, D:  9, L: 16, GF: 42, GA: 58, Pts: 36 },
-  { name: "Tottenham",        short: "TOT", P: 34, W:  8, D: 10, L: 16, GF: 43, GA: 53, Pts: 34 },
-  { name: "Burnley",          short: "BUR", P: 34, W:  4, D:  8, L: 22, GF: 34, GA: 68, Pts: 20 },
-  { name: "Wolves",           short: "WOL", P: 34, W:  3, D:  8, L: 23, GF: 24, GA: 62, Pts: 17 },
+  { name: "Sunderland",       short: "SUN", P: 35, W: 12, D: 11, L: 12, GF: 37, GA: 46, Pts: 47 },
+  { name: "Newcastle",        short: "NEW", P: 35, W: 13, D:  6, L: 16, GF: 49, GA: 51, Pts: 45 },
+  { name: "Leeds",            short: "LEE", P: 35, W: 10, D: 13, L: 12, GF: 47, GA: 52, Pts: 43 },
+  { name: "Crystal Palace",   short: "CRY", P: 34, W: 11, D: 10, L: 13, GF: 36, GA: 42, Pts: 43 },
+  { name: "Nottm Forest",     short: "NFO", P: 35, W: 11, D:  9, L: 15, GF: 44, GA: 46, Pts: 42 },
+  { name: "Tottenham",        short: "TOT", P: 35, W:  9, D: 10, L: 16, GF: 45, GA: 54, Pts: 37 },
+  { name: "West Ham",         short: "WHU", P: 35, W:  9, D:  9, L: 17, GF: 42, GA: 61, Pts: 36 },
+  { name: "Burnley",          short: "BUR", P: 35, W:  4, D:  8, L: 23, GF: 35, GA: 71, Pts: 20 },
+  { name: "Wolves",           short: "WOL", P: 35, W:  3, D:  9, L: 23, GF: 25, GA: 63, Pts: 18 },
 ];
 
 // Index for fast lookup by name
 const TEAM_BY_NAME = Object.fromEntries(TEAMS.map(t => [t.name, t]));
 
-// 40 remaining fixtures (matchweeks 35-38)
+// 31 remaining fixtures (matchweek 35 game tonight + MW 36-38 + game in hand)
 const FIXTURES_RAW = [
-  // MW 35
-  { mw: 35, date: "Fri May 1",  home: "Leeds",            away: "Burnley" },
-  { mw: 35, date: "Sat May 2",  home: "Brentford",        away: "West Ham" },
-  { mw: 35, date: "Sat May 2",  home: "Newcastle",        away: "Brighton" },
-  { mw: 35, date: "Sat May 2",  home: "Wolves",           away: "Sunderland" },
-  { mw: 35, date: "Sat May 2",  home: "Arsenal",          away: "Fulham" },
-  { mw: 35, date: "Sun May 3",  home: "Bournemouth",      away: "Crystal Palace" },
-  { mw: 35, date: "Sun May 3",  home: "Manchester United",away: "Liverpool" },
-  { mw: 35, date: "Sun May 3",  home: "Aston Villa",      away: "Tottenham" },
+  // MW 35 (only Everton-Man City pending; other 9 played and applied to standings above)
   { mw: 35, date: "Mon May 4",  home: "Everton",          away: "Manchester City" },
-  { mw: 35, date: "Mon May 4",  home: "Chelsea",          away: "Nottm Forest" },
   // MW 36
   { mw: 36, date: "Sat May 9",  home: "Brighton",         away: "Wolves" },
   { mw: 36, date: "Sat May 9",  home: "Burnley",          away: "Aston Villa" },
